@@ -1,0 +1,110 @@
+<?xml version="1.0"?>
+<robot>
+  <!-- Support for multiple controllers -->
+  <gazebo>
+    <plugin name="gazebo_ros_control" filename="libgazebo_ros_control.so">
+      <robotNamespace>/</robotNamespace>  
+    </plugin>
+  </gazebo>
+
+  <gazebo reference="base_link">
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
+  <gazebo reference="frame">
+    <turnGravityOff>false</turnGravityOff>
+    <selfCollide>0</selfCollide>
+    <!-- <implicitSpringDamper>True</implicitSpringDamper> -->
+  </gazebo>
+
+  <gazebo reference="l_wheel">
+    <selfCollide>false</selfCollide>
+    <mu1 value="0.5"/>
+    <mu2 value="0.5"/>
+    <kp value="10000000"/>
+    <kd value="1" />
+    <fdir1 value="1 0 0"/>
+    <turnGravityOff>false</turnGravityOff>
+    <selfCollide>0</selfCollide>
+    <!-- <implicitSpringDamper>True</implicitSpringDamper> -->
+  </gazebo>
+
+  <gazebo reference="r_wheel">
+    <selfCollide>false</selfCollide>
+    <mu1 value="0.5"/>
+    <mu2 value="0.5"/>
+    <kp value="10000000"/>
+    <kd value="1" />
+    <fdir1 value="1 0 0"/>
+    <turnGravityOff>false</turnGravityOff>
+    <selfCollide>0</selfCollide>
+    <!-- <implicitSpringDamper>True</implicitSpringDamper> -->
+  </gazebo>
+
+  <gazebo reference="f_caster_arm">
+    <turnGravityOff>false</turnGravityOff>
+    <selfCollide>0</selfCollide>
+    <implicitSpringDamper>True</implicitSpringDamper>
+  </gazebo>
+
+  <gazebo reference="r_caster_wheel">
+    <turnGravityOff>false</turnGravityOff>
+    <selfCollide>0</selfCollide>
+    <implicitSpringDamper>True</implicitSpringDamper> -->
+  </gazebo>
+
+  <gazebo reference="b_caster_wheel">
+    <turnGravityOff>false</turnGravityOff>
+    <selfCollide>0</selfCollide>
+    <implicitSpringDamper>True</implicitSpringDamper> -->
+  </gazebo>
+
+  <gazebo reference="b_caster_arm">
+    <turnGravityOff>false</turnGravityOff>
+    <selfCollide>0</selfCollide>
+    <implicitSpringDamper>True</implicitSpringDamper> -->
+  </gazebo>
+
+  <!-- <gazebo reference="link_1">
+    <turnGravityOff>false</turnGravityOff>
+    <selfCollide>False</selfCollide>
+    <implicitSpringDamper>True</implicitSpringDamper>
+  </gazebo>  
+
+  <gazebo reference="link_2">
+    <turnGravityOff>false</turnGravityOff>
+    <selfCollide>False</selfCollide>
+    <implicitSpringDamper>True</implicitSpringDamper>
+  </gazebo>
+  
+  <gazebo reference="link_3">
+    <turnGravityOff>false</turnGravityOff>
+    <selfCollide>False</selfCollide>
+    <implicitSpringDamper>True</implicitSpringDamper>
+  </gazebo>  
+
+  <gazebo reference="link_4">
+    <turnGravityOff>false</turnGravityOff>
+    <selfCollide>False</selfCollide>
+    <implicitSpringDamper>True</implicitSpringDamper>
+  </gazebo>  
+
+  <gazebo reference="link_5">
+    <turnGravityOff>false</turnGravityOff>
+    <selfCollide>False</selfCollide>
+    <implicitSpringDamper>True</implicitSpringDamper>
+  </gazebo>  
+
+  <gazebo reference="link_6">
+    <turnGravityOff>false</turnGravityOff>
+    <selfCollide>False</selfCollide>
+    <implicitSpringDamper>True</implicitSpringDamper>
+  </gazebo>  
+
+  <gazebo reference="r_finger">
+    <turnGravityOff>false</turnGravityOff>
+    <selfCollide>False</selfCollide>
+    <implicitSpringDamper>True</implicitSpringDamper>
+  </gazebo>  
+   -->
+</robot>

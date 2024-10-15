@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="axel" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- ================ CONSTANTS ================ -->
+
+    <xacro:property name="wheel_radius" value="0.74547"/>
+    <xacro:property name="wheel_width" value="0.410568"/>
+    <xacro:property name="wheel_mass" value = "30"/>
+    <xacro:property name="frame_mass" value = "60"/>
+    <xacro:property name="booms_mass" value = "10"/>
+    
+    <xacro:property name="chassis_offset" value="0.97524"/>
+    <xacro:property name="PI" value="3.14159265358"/>
+
+    <!-- ================ MACROS ================ -->
+
+    <xacro:macro name="transmission_block" params="joint_name">
+		<transmission name="${joint_name}_transmission">
+			<type>transmission_interface/SimpleTransmission</type>
+			<joint name="${joint_name}">
+				<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+			</joint>
+			<actuator name="${joint_name}_actuator">
+				<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+				<mechanicalReduction>1</mechanicalReduction>
+			</actuator>
+		</transmission>
+	</xacro:macro>
+    
+    <xacro:macro name="cylinder_inertia" params="m r h">
+        <inertia  ixx="${m*(3*r*r+h*h)/12}" ixy = "0" ixz = "0"
+                  iyy="${m*(3*r*r+h*h)/12}" iyz = "0"
+                  izz="${m*r*r/2}" /> 
+    </xacro:macro>
+    
+    <!-- ================ GAZEBO SETTINGS  ================ -->
+
+    <xacro:include filename="$(find axel_description)/urdf/axel.gazebo" />
+
+    <!-- ================ BASE LINK - DUMMY ================ -->
+   
+    <link name="base_link"/>
+
+    <!-- ================ FRAME LINK ================ -->
+
+    <link name="frame">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://axel_description/meshes/frame.dae"/>       
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://axel_description/meshes/frame.dae"/>       
+            </geometry>        
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="${frame_mass}"/>
+            <inertia  ixx="18.057" 
+                      ixy = "0.007" iyy="17.943"
+                      ixz = "-0.0001" iyz = "-0.606" izz="13.364"/> 
+        </inertial>
+    </link>
+
+    <!-- ================ BOOMS LINK ================ -->
+
+    <link name="booms">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://axel_description/meshes/booms.dae"/>       
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://axel_description/meshes/booms.dae"/>       
+            </geometry>        
+        </collision>
+        <inertial>
+            <origin xyz="-0.88275 0 0" rpy="0 0 0" />
+            <mass value="${booms_mass}"/>
+                <inertia  ixx="1.570" 
+                          ixy = "-0.567" iyy="1.44"
+                          ixz = "0.343" iyz = "0.606" izz="1.407"/> 
+        </inertial>
+    </link>
+
+    <!-- ================ LEFT WHEEL LINK ================ -->
+
+    <link name="l_wheel">
+        <visual>
+            <origin rpy="0 0 ${PI/2}" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://axel_description/meshes/wheel.dae"/>       
+            </geometry>   
+        </visual>
+        <collision>
+            <origin rpy="${PI/2} 0 ${PI/2}" xyz="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+              </geometry>         
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="${PI/2} 0 ${PI/2}" />
+            <mass value="${wheel_mass}"/>
+            <xacro:cylinder_inertia m="${wheel_mass}" r="${wheel_radius}" h="${wheel_width}"/>
+        </inertial>
+    </link>
+
+    <!-- ================ RIGHT WHEEL LINK ================ -->
+
+    <link name="r_wheel">
+        <visual>
+            <origin rpy="${PI} 0 ${PI/2}" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://axel_description/meshes/wheel.dae"/>       
+            </geometry>   
+        </visual>
+        <collision>
+            <origin rpy="${PI/2} 0 ${PI/2}" xyz="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+              </geometry>         
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="${PI/2} 0 ${PI/2}" />
+            <mass value="${wheel_mass}"/>
+            <xacro:cylinder_inertia m="${wheel_mass}" r="${wheel_radius}" h="${wheel_width}"/>
+        </inertial>
+    </link>
+
+    <!-- ================ FRAME JOINT ================ -->
+
+    <joint name="joint_base_link" type="fixed">
+        <parent link="base_link"/>
+        <child  link="frame"/>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+    </joint>
+
+    <!-- ================ BOOMS JOINT ================ -->
+
+    <joint name="joint_booms" type="fixed">
+        <parent link="frame"/>
+        <child  link="booms"/>
+        <origin rpy="0 0 0" xyz="-0.79625 -0.000511 -0.003148"/>
+    </joint>
+
+    <!-- ================ RIGHT WHEEL JOINT ================ -->
+
+    <joint name="joint_r_wheel" type="continuous">
+        <parent link="frame"/>
+        <child  link="r_wheel"/>
+        <origin rpy="0 0 ${PI/2}" xyz="0 -${chassis_offset} 0"/>
+        <axis xyz="1 0 0"/>
+    </joint>
+
+    <transmission name="r_wheel_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint_r_wheel">
+            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="right_wheel_actuator">
+            <mechanicalReduction> 1 </mechanicalReduction>
+            <hardwareInterface>VelocityJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+    
+    <!-- ================ LEFT WHEEL JOINT ================ -->
+
+    <joint name="joint_l_wheel" type="continuous">
+        <parent link="frame"/>
+        <child  link="l_wheel"/>
+        <origin rpy="0 0 ${PI/2}" xyz="0 ${chassis_offset} 0"/>
+        <axis xyz="1 0 0"/>
+        <limit effort="30" velocity="1.0"/>
+    </joint>
+
+    <transmission name="l_wheel_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint_l_wheel">
+            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </joint>
+        
+        <actuator name="left_wheel_actuator">
+            <mechanicalReduction> 1 </mechanicalReduction>
+            <hardwareInterface>VelocityJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+</robot>

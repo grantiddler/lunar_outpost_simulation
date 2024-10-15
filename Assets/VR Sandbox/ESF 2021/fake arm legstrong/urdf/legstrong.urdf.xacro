@@ -1,0 +1,585 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot name="legstrong" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- ================ CONSTANTS ================ -->
+
+    <xacro:property name="wheel_radius" value="0.076875"/>
+    <xacro:property name="wheel_width" value="0.027844"/>
+    <xacro:property name="PI" value="3.14159265358"/>
+
+    <!-- ================ MACROS ================ -->
+
+    <xacro:macro name="transmission_block" params="joint_name">
+		<transmission name="${joint_name}_transmission">
+			<type>transmission_interface/SimpleTransmission</type>
+			<joint name="${joint_name}">
+				<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+			</joint>
+			<actuator name="${joint_name}_actuator">
+				<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+				<mechanicalReduction>1</mechanicalReduction>
+			</actuator>
+		</transmission>
+	</xacro:macro>        
+
+    <!-- ================ BASE LINK - DUMMY ================ -->
+ 
+    <link name="base_link"/>
+
+    <!-- ================ FRAME LINK ================ -->
+
+    <link name="frame">
+        <visual>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/frame.dae"/>       
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/frame.dae"/>
+            </geometry>            
+        </collision>
+        <inertial>
+            <origin xyz="0.012  0.002 0.067" rpy="0 0 0"/>
+            <mass value="9.748"/>
+            <inertia
+                ixx="0.15604" ixy="-0.01985" ixz="-0.00008"
+                iyy="0.14019" iyz="-0.00045"
+                izz="0.12027"/>
+        </inertial>
+    </link>
+
+    <!-- ================ LEFT WHEEL LINK ================ -->
+
+    <link name="l_wheel">
+        <visual>
+            <!-- <origin rpy="0 1.5708 0" xyz="0 0 0"/> -->
+            <!-- Set to p=1.5708 when using the cylinder collidor -->
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/l_wheel.dae"/>       
+                <!-- <cylinder radius="${wheel_radius}" length="${wheel_width}"/> -->
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="0 1.5708 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+            </geometry>       
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.635"/>
+            <inertia
+                ixx="0.0009" ixy="0.0" ixz="0.0"
+                iyy="0.00089" iyz="0.0"
+                izz="0.00172"/>
+        </inertial>
+    </link>
+
+    <!-- ================ RIGHT WHEEL LINK ================ -->
+
+    <link name="r_wheel">
+        <visual>
+            <!-- <origin rpy="0 1.5708 0" xyz="0 0 0"/> -->
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/r_wheel.dae"/>       
+                <!-- <cylinder radius="${wheel_radius}" length="${wheel_width}"/> -->
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="0 1.5708 0" xyz="0 0 0"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+            </geometry>            
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0"/>
+            <mass value="0.635"/>
+            <inertia
+                ixx="0.0009" ixy="0.0" ixz="0.0"
+                iyy="0.00089" iyz="0.0"
+                izz="0.00172"/>
+        </inertial>
+    </link>
+
+    <!-- ================ FRONT CASTER ARM LINK ================ -->
+
+    <link name="f_caster_arm">
+        <visual>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/caster_arm.dae"/>       
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/caster_arm.dae"/>
+            </geometry>            
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.1" />
+            <inertia
+                ixx="0.00005" ixy="0.00001" ixz="0.0"
+                iyy="0.00001" iyz="0.0" izz="0.00003" />
+            </inertial>
+    </link>
+
+    <!-- ================ FRONT CASTER WHEELS LINK ================ -->
+
+    <link name="f_caster_wheels">
+        <visual>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/caster_wheels.dae"/>       
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/caster_wheels.dae"/>
+            </geometry>            
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.1516"/>
+            <inertia
+                ixx="0.0001" ixy="0.0" ixz="0.0"
+                iyy="0.0001" iyz="0.0" izz="0.0001" />
+        </inertial>
+    </link>
+
+    <!-- ================ BACK CASTER ARM LINK ================ -->
+
+    <link name="b_caster_arm">
+        <visual>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/caster_arm.dae"/>       
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/caster_arm.dae"/>
+            </geometry>            
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.1" />
+            <inertia
+                ixx="0.00005" ixy="0.00001" ixz="0.0"
+                iyy="0.00001" iyz="0.0" izz="0.00003" />
+        </inertial>
+    </link>    
+
+    <!-- ================ BACK CASTER WHEELS LINK ================ -->
+
+    <link name="b_caster_wheels">
+        <visual>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/caster_wheels.dae"/>       
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/caster_wheels.dae"/>
+            </geometry>            
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.1516"/>
+            <inertia
+                ixx="0.0001" ixy="0.0" ixz="0.0"
+                iyy="0.0001" iyz="0.0" izz="0.0001" />
+        </inertial>
+    </link>
+
+    <!-- ================ LINK1 LINK ================ -->
+
+    <!-- <link name="link_1">
+        <visual>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/link_1.dae"/>       
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/link_1.dae"/>       
+            </geometry>            
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.266262084814045" />
+            <inertia
+                ixx="0.000104593288743262" ixy="2.13438344279435E-08" ixz="-1.18288811562897E-06"
+                iyy="0.00032148615989113" iyz="1.76046645274627E-08" izz="0.000216893011548678" />
+            </inertial>
+    </link> -->
+
+    <!-- ================ LINK2 LINK ================ -->
+
+    <!-- <link name="link_2">
+        <visual>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/link_2.dae"/>       
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/link_2.dae"/>
+            </geometry>            
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.20557" />
+            <inertia
+                ixx="0.000945810281839495" ixy="-3.75279192756167E-07" ixz="-2.68829797915708E-06"
+                iyy="0.000980318331283739" iyz="-8.22410693097532E-05"
+                izz="6.07849054159079E-05" />
+            </inertial>
+    </link> -->
+
+    <!-- ================ LINK3 LINK ================ -->
+
+    <!-- <link name="link_3">
+        <visual>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/link_3.dae"/>       
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/link_3.dae"/>
+            </geometry>            
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.145524" />
+            <inertia
+                ixx="4.93098686773543E-05" ixy="5.89377990972886E-11" ixz="5.91336907921079E-11"
+                iyy="6.58934003599806E-05" iyz="9.43389639479683E-08" izz="2.46228458803864E-05" />
+        </inertial>
+    </link> -->
+
+    <!-- ================ LINK4 LINK ================ -->
+
+    <!-- <link name="link_4">
+        <visual>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/link_4.dae"/>       
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/link_4.dae"/>
+            </geometry>            
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="1" />
+            <inertia
+                ixx="9.39737633066184E-06" ixy="-1.04591568016406E-10" ixz="-5.44323642033752E-08"
+                iyy="9.3976569237048E-06" iyz="-1.8056954003407E-08" izz="3.4998577136393E-10"/>
+        </inertial>
+    </link> -->
+
+    <!-- ================ LINK5 LINK ================ -->
+
+    <!-- <link name="link_5">
+        <visual>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/link_5.dae"/>       
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/link_5.dae"/>
+            </geometry>            
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.092731" />
+            <inertia
+                ixx="2.20187618318443E-05" ixy="-1.79450945670291E-11" ixz="2.90513976464271E-10"
+                iyy="3.01646889575727E-05" iyz="2.43983145821587E-06" izz="1.00074692806394E-05"/>
+        </inertial>
+    </link> -->
+
+    <!-- ================ LINK6 LINK ================ -->
+
+    <!-- <link name="link_6">
+        <visual>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/link_6.dae"/>       
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/link_6.dae"/>
+            </geometry>            
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.12368" />
+            <inertia
+                ixx="2.45041167636038E-05" ixy="2.21546568984653E-09" ixz="1.63355680293107E-08"
+                iyy="5.29618388373048E-05" iyz="2.58579745481831E-06" izz="3.26866508599107E-05" />
+        </inertial>
+    </link> -->
+
+
+    <!-- ================ R_FINGER LINK ================ -->
+
+    <!-- <link name="r_finger">
+        <visual>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/r_finger.dae"/>       
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/r_finger.dae"/>
+            </geometry>            
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.027053" />
+            <inertia
+                ixx="2.7531E-05" ixy="3.0411E-07" ixz="-2.9977E-07"
+                iyy="2.9398E-06" iyz="7.1644E-06" izz="2.5394E-05" />
+        </inertial>
+    </link> -->
+
+
+    <!-- ================ L_FINGER LINK ================ -->
+
+    <!-- <link name="l_finger">
+        <visual>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/l_finger.dae"/>       
+            </geometry>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://legstrong_description/meshes/l_finger.dae"/>
+            </geometry>            
+        </collision>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 0 0" />
+            <mass value="0.027053" />
+            <inertia
+                ixx="2.7531E-05" ixy="3.0411E-07" ixz="-2.9977E-07"
+                iyy="2.9398E-06" iyz="7.1644E-06" izz="2.5394E-05" />
+        </inertial>
+    </link> -->
+
+    <!-- ================ END EFFECTOR SPHERE LINK ================ -->
+
+    <!-- <link name="end_effector">
+        <visual>
+            <geometry>
+                <sphere radius="0.015"/>
+            </geometry>
+        </visual>
+    </link> -->
+
+    <!-- ================ FRAME JOINT ================ -->
+
+    <joint name="joint_base_link" type="fixed">
+        <parent link="base_link"/>
+        <child  link="frame"/>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+    </joint>
+
+    <!-- ================ LEFT WHEEL JOINT ================ -->
+
+    <joint name="joint_l_wheel" type="continuous">
+        <parent link="frame"/>
+        <child  link="l_wheel"/>
+        <origin rpy="0 0 0" xyz="0.18729 0 0"/>
+        <axis xyz="1 0 0"/>
+    </joint>
+
+    <transmission name="l_wheel_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint_l_wheel">
+            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="left_wheel_actuator">
+            <mechanicalReduction> 1 </mechanicalReduction>
+            <hardwareInterface>VelocityJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+    
+    <!-- ================ RIGHT WHEEL JOINT ================ -->
+
+    <joint name="joint_r_wheel" type="continuous">
+        <parent link="frame"/>
+        <child  link="r_wheel"/>
+        <origin rpy="0 0 0" xyz="-0.18729 0 0"/>
+        <axis xyz="1 0 0"/>
+    </joint>
+
+    <transmission name="r_wheel_trans">
+        <type>transmission_interface/SimpleTransmission</type>
+        <joint name="joint_r_wheel">
+            <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+        </joint>
+        <actuator name="right_wheel_actuator">
+            <mechanicalReduction> 1 </mechanicalReduction>
+            <hardwareInterface>VelocityJointInterface</hardwareInterface>
+        </actuator>
+    </transmission>
+
+    <!-- ================ FRONT CASTER ARM JOINT ================ -->
+    
+    <joint name="joint_f_caster_arm" type="continuous">
+        <parent link="frame"/>
+        <child  link="f_caster_arm"/>
+        <origin rpy="0 0 0" xyz="0 -0.18518 0.006469"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+    
+    <!-- ================ FRONT CASTER WHEELS JOINT ================ -->
+    
+    <joint name="joint_f_caster_wheels" type="continuous">
+        <parent link="f_caster_arm"/>
+        <child  link="f_caster_wheels"/>
+        <origin rpy="0 0 0" xyz="0 0.0387 -0.0419"/>
+        <axis xyz="1 0 0"/>
+    </joint>
+
+    <!-- ================ BACK CASTER ARM JOINT ================ -->
+
+    <joint name="joint_b_caster_arm" type="continuous">
+        <parent link="frame"/>
+        <child  link="b_caster_arm"/>
+        <origin rpy="0 0 0" xyz="0 0.18518 0.006469"/>
+        <axis xyz="0 0 1"/>
+    </joint>
+
+    <!-- ================ BACK CASTER WHEELS JOINT ================ -->
+
+    <joint name="joint_b_caster_wheels" type="continuous">
+        <parent link="b_caster_arm"/>
+        <child  link="b_caster_wheels"/>
+        <origin rpy="0 0 0" xyz="0 0.0387 -0.0419"/>
+        <axis xyz="1 0 0"/>
+    </joint>
+
+    <!-- ================ LINK1 JOINT ================ -->
+
+    <!-- <joint name="joint_1" type="revolute">
+        <parent link="frame"/>
+        <child  link="link_1"/>
+        <origin rpy="0 0 0" xyz="0 -0.15508 0.076053"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-1.5708" upper="1.5708" effort="24" velocity="6.07"/>
+    </joint>
+
+   <xacro:transmission_block joint_name="joint_1"/> -->
+
+    <!-- ================ LINK2 JOINT ================ -->
+
+    <!-- <joint name="joint_2" type="revolute">
+        <parent link="link_1"/>
+        <child  link="link_2"/>
+        <origin rpy="0 0 0" xyz="0 0 0.068757"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="-1.91288086" upper="1.91288086" effort="48" velocity="6.07"/>
+    </joint>
+
+   <xacro:transmission_block joint_name="joint_2"/> -->
+
+    <!-- ================ LINK3 JOINT ================ -->
+
+    <!-- <joint name="joint_3" type="revolute">
+        <parent link="link_2"/>
+        <child  link="link_3"/>
+        <origin rpy="0 0 0" xyz="0 -0.031055 0.18221"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="-2.7227136" upper="0.356047" effort="24" velocity="6.07"/>
+    </joint>
+
+   <xacro:transmission_block joint_name="joint_3"/> -->
+
+    <!-- ================ LINK4 JOINT ================ -->
+
+    <!-- <joint name="joint_4" type="revolute">
+        <parent link="link_3"/>
+        <child  link="link_4"/>
+        <origin rpy="0 0 0" xyz="0 0 0.0855"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-3.14159265" upper="3.14159265" effort="24" velocity="6.07"/>
+    </joint>
+
+   <xacro:transmission_block joint_name="joint_4"/> -->
+    
+    <!-- ================ LINK5 JOINT ================ -->
+
+    <!-- <joint name="joint_5" type="revolute">
+        <parent link="link_4"/>
+        <child  link="link_5"/>
+        <origin rpy="0 0 0" xyz="0 0 0.066188"/>
+        <axis xyz="1 0 0"/>
+        <limit lower="-1.91288086" upper="1.91288086" effort="24" velocity="6.07"/>
+    </joint>
+
+   <xacro:transmission_block joint_name="joint_5"/> -->
+
+    <!-- ================ LINK6 JOINT ================ -->
+
+    <!-- <joint name="joint_6" type="revolute">
+        <parent link="link_5"/>
+        <child  link="link_6"/>
+        <origin rpy="0 0 0" xyz="0 -0.016024 0.08458"/>
+        <axis xyz="0 0 1"/>
+        <limit lower="-2.617993878" upper="2.617993878" effort="10" velocity="6.07"/>
+    </joint>
+
+   <xacro:transmission_block joint_name="joint_6"/> -->
+
+    <!-- ================ R_FINGER JOINT ================ -->
+<!-- 
+    <joint name="joint_r_finger" type="revolute">
+        <parent link="link_6"/>
+        <child  link="r_finger"/>
+        <origin rpy="0 0 0" xyz="0.01853 -0.000527 0.05403"/>
+        <axis xyz="0 1 0"/>
+        <limit lower="-0.40" upper="0" effort="10" velocity="6.07"/>
+    </joint>
+
+   <xacro:transmission_block joint_name="joint_r_finger"/> -->
+
+   <!-- ================ L_FINGER JOINT ================ -->
+<!-- 
+    <joint name="joint_l_finger" type="revolute">
+        <parent link="link_6"/>
+        <child  link="l_finger"/>
+        <origin rpy="0 0 0" xyz="-0.01853 -0.000527 0.05403"/>
+        <axis xyz="0 1 0"/>
+        <limit lower="0" upper="0.40" effort="10" velocity="6.07"/>
+    </joint>
+
+   <xacro:transmission_block joint_name="joint_l_finger"/> -->
+
+   <!-- ================ END EFFECTOR JOINT ================ -->
+
+    <!-- <joint name="joint_end_effector" type="fixed">
+        <parent link="link_6"/>
+        <child  link="end_effector"/>
+        <origin rpy="0 0 0" xyz="0 -0.077462 0.083028"/>
+    </joint> -->
+
+    <xacro:include filename="$(find legstrong_description)/urdf/legstrong.gazebo" />
+
+</robot>

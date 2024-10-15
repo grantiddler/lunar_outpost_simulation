@@ -1,0 +1,135 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<robot name="axle">
+  <material name="Matte Metal.004">
+    <color rgba="0.6267 0.6267 0.6267 1" />
+  </material>
+  <material name="black">
+    <color rgba="1 1 1 1" />
+  </material>
+  <link name="base_link" />
+  <link name="frame">
+    <visual>
+      <geometry>
+        <mesh filename="package://meshes/frame.dae" scale="1 1 1" />
+      </geometry>
+      <material name="Matte Metal.004">
+        <color rgba="0.6267 0.6267 0.6267 1" />
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://meshes/frame.dae" scale="1 1 1" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="left_wheel">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <mass value="0.4769999981" />
+      <inertia ixx="0.00130000000353903" ixy="0" ixz="0" iyy="0.00240000011399388" iyz="0" izz="0.00130000000353903" />
+    </inertial>
+    <visual>
+      <origin rpy="-1.570796 0 0" />
+      <geometry>
+        <mesh filename="package://meshes/wheel.dae" scale="1 1 1" />
+      </geometry>
+      <material name="black">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -0.487619" />
+      <geometry>
+        <cylinder length="0.410568" radius="0.74547" />
+      </geometry>
+    </collision>
+  </link>
+  <link name="right_wheel">
+    <inertial>
+      <origin rpy="0 0 0" xyz="0 0 0" />
+      <mass value="0.4769999981" />
+      <inertia ixx="0.00130000000353903" ixy="0" ixz="0" iyy="0.00240000011399388" iyz="0" izz="0.00130000000353903" />
+    </inertial>
+    <visual>
+      <origin rpy="-1.570796 0 0" />
+      <geometry>
+        <mesh filename="package://meshes/wheel.dae" scale="1 1 1" />
+      </geometry>
+      <material name="black">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0.487619" />
+      <geometry>
+        <cylinder length="0.410568" radius="0.74547" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="joint_base_link" type="fixed">
+    <parent link="base_link" />
+    <child link="frame" />
+  </joint>
+  <joint name="left_wheel_joint" type="continuous">
+    <origin rpy="-4.712389 0 0" xyz="0 0.487619 0" />
+    <parent link="frame" />
+    <child link="left_wheel" />
+    <axis xyz="0 1 0" />
+  </joint>
+  <joint name="right_wheel_joint" type="continuous">
+    <origin rpy="-4.712389 0 0" xyz="0 -0.487619 0" />
+    <parent link="frame" />
+    <child link="right_wheel" />
+    <axis xyz="0 1 0" />
+  </joint>
+  <gazebo>
+  <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
+    <robotNamespace>/</robotNamespace>
+  </plugin>
+</gazebo>
+<gazebo reference="base_link">
+  <turnGravityOff>false</turnGravityOff>
+</gazebo>
+<gazebo reference="frame">
+  <turnGravityOff>false</turnGravityOff>
+  <selfCollide>0</selfCollide>
+</gazebo>
+<gazebo reference="l_wheel">
+  <selfCollide>false</selfCollide>
+  <mu1 value="0.5" />
+  <mu2 value="0.5" />
+  <kp value="10000000" />
+  <kd value="1" />
+  <fdir1 value="1 0 0" />
+  <turnGravityOff>false</turnGravityOff>
+  <selfCollide>0</selfCollide>
+</gazebo>
+<gazebo reference="r_wheel">
+  <selfCollide>false</selfCollide>
+  <mu1 value="0.5" />
+  <mu2 value="0.5" />
+  <kp value="10000000" />
+  <kd value="1" />
+  <fdir1 value="1 0 0" />
+  <turnGravityOff>false</turnGravityOff>
+  <selfCollide>0</selfCollide>
+</gazebo>
+<transmission name="left_wheel_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="left_wheel">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="left_actuator">
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+<transmission name="right_wheel_trans">
+  <type>transmission_interface/SimpleTransmission</type>
+  <joint name="right_wheel">
+    <hardwareInterface>hardware_interface/VelocityJointInterface</hardwareInterface>
+  </joint>
+  <actuator name="right_actuator">
+    <mechanicalReduction>1</mechanicalReduction>
+  </actuator>
+</transmission>
+</robot>

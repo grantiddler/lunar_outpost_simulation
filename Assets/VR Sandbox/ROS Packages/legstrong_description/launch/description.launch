@@ -1,0 +1,9 @@
+<!-- ========================================================= -->
+<!-- Loads Legstrong's URDF                                    -->
+<!-- ========================================================= -->
+<launch>
+  <param name="robot_description"
+         command="$(find xacro)/xacro $(find legstrong_description)/urdf/legstrong.urdf.xacro
+                  --inorder" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+</launch>
